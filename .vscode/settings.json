@@ -1,0 +1,32 @@
+{
+    "python.linting.pylintEnabled": false,
+    "python.linting.enabled": true,
+    "python.formatting.provider": "black",
+    "editor.formatOnSave": true,
+    "python.autoComplete.addBrackets": true,
+    "python.autoComplete.showAdvancedMembers": true,
+    "editor.quickSuggestions": {
+      "other": true,
+      "comments": false,
+      "strings": false
+    },
+    "editor.acceptSuggestionOnCommitCharacter": true,
+    "editor.acceptSuggestionOnEnter": "on",
+    "editor.quickSuggestionsDelay": 10,
+    "editor.suggestOnTriggerCharacters": true,
+    "editor.tabCompletion": "on",
+    "editor.suggest.localityBonus": true,
+    "editor.suggestSelection": "recentlyUsed",
+    "editor.wordBasedSuggestions": true,
+    "editor.parameterHints.enabled": true,
+    "python.analysis.completeFunctionParens": true,
+    "cSpell.words": [
+      "kube",
+      "kubernetes",
+      "vectorizer"
+    ],
+    "python.linting.mypyEnabled": true,
+    "python.linting.ignorePatterns": [
+      "virtualenvs/**/*.py"
+    ]
+  }
