@@ -2,8 +2,19 @@ import pandas as pd
 import nltk
 from nltk.corpus import stopwords
 from sklearn.linear_model import LogisticRegression
-from sentence_transformers import SentenceTransformer
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, precision_score, recall_score
+from sklearn import svm
+
+# from sentence_transformers import SentenceTransformer
 import numpy as np
+import numpy as np
+import gensim.downloader as api
+from sklearn.metrics import accuracy_score
+
+# Download pre-trained word2vec embeddings
+embeddings = api.load("word2vec-google-news-300")
 
 ######################################
 ########### preprocessing ############
@@ -34,23 +45,77 @@ corpus = [
 
 parsed_corpus = [remove_new_lines(sent.lower()) for sent in corpus]
 
+
+# Splitting the dataset into training and test sets
+X_train, X_test, y_train, y_test = train_test_split(
+    corpus, df["applications"], test_size=0.2, random_state=42
+)
+
+
 #### train the model
+def encode_text(text):
+    return np.mean(
+        [
+            embeddings.word_vec(word)
+            for word in text.split()
+            if word in embeddings.key_to_index
+        ],
+        axis=0,
+    )
 
-# Load a pre-trained transformer model
-model = SentenceTransformer("bert-base-nli-mean-tokens")
 
-# Encode the descriptions into feature vectors
-X = model.encode(parsed_corpus)
+X_train_vectored = [encode_text(sent) for sent in X_train]
 
-# Convert the grades into numerical labels
-y = df["applications"].tolist()
-
+###################################################
 # Train a LogisticRegression model on the feature vectors and labels
+###################################################
 clf = LogisticRegression()
-clf.fit(X, y)
+clf.fit(X_train_vectored, y_train)
 
-# Use the trained model to predict the grade for a new description
-new_description = "The class is poorly organized and the instructor is unhelpful"
-new_feature_vector = model.encode(new_description)
-new_grade = clf.predict(new_feature_vector)
-print("Predicted grade for new description: ", new_grade)
+## Test the accuracy score
+# Predict on the test set
+X_test_vectored = [encode_text(sent) for sent in X_test]
+y_pred = clf.predict(X_test_vectored)
+
+# Compute the accuracy
+acc = accuracy_score(y_test, y_pred)
+print("Accuracy: {:.2f}%".format(acc * 100))
+
+###################################################
+# Train a Random forest model on the feature vectors and labels
+###################################################
+
+# Initialize the model
+rfc = RandomForestClassifier()
+
+# Fit the model on the training data
+rfc.fit(X_train_vectored, y_train)
+
+# Make predictions on the test data
+X_test_vectored = [encode_text(sent) for sent in X_test]
+rfc_predictions = rfc.predict(X_test_vectored)
+
+# Evaluate the model
+print("Accuracy RF: ", accuracy_score(y_test, rfc_predictions))
+print(
+    "Precision Score RF: ", precision_score(y_test, rfc_predictions, average="weighted")
+)
+print("Recall Score RF: ", recall_score(y_test, rfc_predictions, average="weighted"))
+
+# Train the SVM model
+clf = svm.SVC()
+clf.fit(X_train_vectored, y_train)
+
+# Predict on the test set
+X_test_vectored = [encode_text(sent) for sent in X_test]
+y_pred = clf.predict(X_test_vectored)
+
+# Compute the accuracy
+acc = accuracy_score(y_test, y_pred)
+print("Accuracy: {:.2f}%".format(acc * 100))
+print(
+    "Precision Score RF: ", precision_score(y_test, rfc_predictions, average="weighted")
+)
+print("Recall Score RF: ", recall_score(y_test, rfc_predictions, average="weighted"))
+
+print("Thanks for coming here")
