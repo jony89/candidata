@@ -63,7 +63,8 @@ plt.title("Term frequency of top 10 stemmed tokens", fontsize=30)
 # Display the plot
 plt.show()
 
-### filter for the 3 different buckets
+### create wordcloud
+## filter for the 3 different buckets seperatly 
 
 
 df.description = df["description"].apply(lambda x: str(x).lower())
