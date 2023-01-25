@@ -1,29 +1,22 @@
 # First, you will need to import the necessary libraries
 from wordcloud import WordCloud
+from collections import Counter
 import matplotlib.pyplot as plt
 import pandas as pd
 import string
 import nltk
+import re
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
+nltk.download("punkt")
+nltk.download("stopwords")
+
 
 df = pd.read_csv("./data/800_jobs__clean_no_hebrew.csv")
 
 
-## barplot for most frequent words
-from collections import Counter
-import re
-import pandas as pd
-import nltk
+## Graph 1 - barplot for most frequent words
 
-nltk.download("punkt")
-nltk.download("stopwords")
-from nltk.corpus import stopwords
-from nltk.stem import PorterStemmer
-import matplotlib.pyplot as plt
-
-df = pd.read_csv("800_jobs__clean_no_hebrew.csv")
-print(df)
 # Extract the text column and preprocess it by lowercasing and removing punctuation
 corpus = df["description"].apply(lambda x: str(x).lower())
 corpus = corpus.apply(lambda x: re.sub(r"[^\w\s]", "", x))
@@ -63,7 +56,7 @@ plt.title("Term frequency of top 10 stemmed tokens", fontsize=30)
 # Display the plot
 plt.show()
 
-### create wordcloud
+### Graph 2  - create wordclouds for the different buckets
 ## filter for the 3 different buckets seperatly 
 
 
@@ -103,7 +96,7 @@ plt.figure(figsize=(20, 10))
 plt.imshow(wordcloud)
 
 
-###### Bar plts jobs
+###### Graph 3 -  Bar plots jobs
 
 # Clean the titles to avoid duplicates
 df.title = df["title"].apply(lambda x: str(x).lower())
