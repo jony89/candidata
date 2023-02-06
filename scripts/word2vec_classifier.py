@@ -7,14 +7,15 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, precision_score, recall_score
 from sklearn import svm
 
-# from sentence_transformers import SentenceTransformer
-import numpy as np
+from sentence_transformers import SentenceTransformer
 import numpy as np
 import gensim.downloader as api
 from sklearn.metrics import accuracy_score
 
 # Download pre-trained word2vec embeddings
 embeddings = api.load("word2vec-google-news-300")
+
+model = SentenceTransformer("paraphrase-MiniLM-L6-v2")
 
 ######################################
 ########### preprocessing ############
@@ -54,14 +55,17 @@ X_train, X_test, y_train, y_test = train_test_split(
 
 #### train the model
 def encode_text(text):
-    return np.mean(
-        [
-            embeddings.word_vec(word)
-            for word in text.split()
-            if word in embeddings.key_to_index
-        ],
-        axis=0,
-    )
+    return model.encode(sentences=text)
+
+
+# np.mean(
+#         [
+#             embeddings.word_vec(word)
+#             for word in text.split()
+#             if word in embeddings.key_to_index
+#         ],
+#         axis=0,
+#     )
 
 
 X_train_vectored = [encode_text(sent) for sent in X_train]

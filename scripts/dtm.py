@@ -41,6 +41,7 @@ vectorizer = CountVectorizer()
 BOW = vectorizer.fit_transform(processed_corpus)
 
 print(f"--------- BOW: \n {BOW}")
+print(f"--------- BOW.toarray(): \n {BOW.toarray()}")
 print(
     f"--------- vectorizer.get_feature_names_out(): \n {vectorizer.get_feature_names_out()}"
 )
